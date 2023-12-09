@@ -1,6 +1,5 @@
 ---
 title: 객체 지향 프로그래밍이란?
-date: 2023-12-10 03:09:00 +0900
 categories: [Computer science, Object Oriented Programming]
 tags: [Object Oriented Programming, object, OOP, 객체 지향 프로그래밍, 객체]
 ---
