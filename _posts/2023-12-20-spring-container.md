@@ -146,5 +146,22 @@ ApplicationContext는 인터페이스이고 사실 이 인터페이스는 BeanFa
 
 간단히 살펴보면, 클라이언트가 웹 애플리케이션에 들어오는 region에 맞춰서 다국어를 제공해주는 메시지 소스, 환경 변수에 대한 관리, 애플리케이션 이벤트에 대한 관리, 리소스 관리 등을 관장해주는 인터페이스들에 대한 상속까지 모두 되어 있는 것이 ApplicationContext입니다. 그래서 실제로 웹 애플리케이션을 개발할 때 BeanFactory만 사용하는 경우는 거의 없고 ApplicationContext를 많이 이용하게 됩니다. 이러한 BeanFactory나 ApplicationContext를 모두 스프링 컨테이너라고 부릅니다.    
     
+## BeanDefinition이란?
+지금까지 알아본 것처럼 스프링 컨테이너에 빈을 등록하기 위해서 AppConfig 클래스를 자바로 작성하였습니다. 요즘엔 자바로 작성한 Config 파일을 많이 사용하긴 하지만, 이 외에도 xml이나 자기가 다른 포맷으로 만들어 설정할 수도 있는데, 어떻게 이것이 가능한지 알아보겠습니다.   
+    
+결론부터 말하면, 이렇게 다양한 포맷으로 Bean에 대한 Config를 할 수 있는 이유는 스프링 프레임워크에서 역할과 구현을 잘 나눠 **BeanDefinition**이라는 추상화에만 의존하기 때문입니다. 이러한 BeanDefinition은 빈 하나당 1개씩 만들어지게 됩니다.   
+    
+![7](/assets/img/spring-container/7.png){: w="500" h="300" style="border:1px solid #eaeaea; border-radius: 7px; padding: 0px;"}
+
+![8](/assets/img/spring-container/8.png){: w="500" h="300" style="border:1px solid #eaeaea; border-radius: 7px; padding: 0px;"}
+
+위 구조에서 볼 수 있는 것처럼 Java, Xml 등 다양한 포맷에 대한 Configuration을 지원하고 각각에 구현되어 있는 BeanDefinitionReader가 이러한 Config 파일을 읽어서 BeanDefinition(Bean에 대한 메타 데이터)을 생성합니다.   
+스프링 컨테이너는 이렇게 생성된 BeanDefinition에만 의존하고 이 메타 정보를 바탕으로 실제 Spring Bean을 생성하게 됩니다.
+
+## 마무리
+이번 포스팅에서는 순수 자바코드로 Bean에 대한 설정 정보를 담고있는 AppConfig 파일을 작성하는 방법부터 ApplicationContext의 구조와 더 나아가 BeanDefinition에 대해 살펴봤습니다. 이를 통해 어떤 구조와 흐름으로 Spring container에 Bean이 생성되는지 알 수 있었습니다. 이번 공부를 하면서도 느낀거지만 스프링 프레임워크는 참 역할과 구현이 잘 나누어져 있다는 생각이 듭니다.
+
+
+    
 ## References
 * 인프런 내 김영한 강사님의 스프링 핵심 원리 - 기본편
