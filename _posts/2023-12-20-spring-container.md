@@ -1,7 +1,7 @@
 ---
 title: 스프링 컨테이너 완전 정복하기
-categories: [Computer science, Object Oriented Programming]
-tags: [Object Oriented Programming, object, OOP, spring container, 객체 지향 프로그래밍, 객체, 스프링 컨테이너]
+categories: [Computer engineering, Backend engineering]
+tags: [backend, spring, java, spring container, 백엔드, 스프링, 자바, 스프링 컨테이너]
 ---
 
 이번 포스팅에서는 이전 DI, IoC 포스팅에서 배웠던 DI 컨테이너의 Spring 버전인 Spring container에 대해 기본적인 개념부터 깊이있는 내용까지 모두 다뤄보겠습니다. 그 전에 스프링을 사용하기 전에 순수 Java 코드로 구현한 AppConfig 코드 먼저 살펴보겠습니다.

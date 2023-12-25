@@ -1,7 +1,7 @@
 ---
 title: 싱글톤 컨테이너에 대한 모든 것
-categories: [Computer science, Object Oriented Programming]
-tags: [Object Oriented Programming, object, OOP, singleton container, 객체 지향 프로그래밍, 객체, 싱글톤 컨테이너]
+categories: [Computer engineering, Backend engineering]
+tags: [backend, spring, java, singleton container, 백엔드, 스프링, 자바, 싱글톤 컨테이너]
 ---
 
 이번 포스팅에서는 앞서 배웠던 Spring container에 이어서 싱글톤 컨테이너(Singleton container)에 대해 알아보는 시간을 가지도록 하겠습니다.
