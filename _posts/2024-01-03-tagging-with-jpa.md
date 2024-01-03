@@ -1,5 +1,5 @@
 ---
-title: Tagging 구현을 위한 최적의 설계를 찾아서(with Spring JPA)...
+title: Tagging 구현을 위한 최적의 설계를 찾아서(with Spring JPA)
 categories: [Computer engineering, Backend engineering]
 tags: [backend, spring, java, tagging, labeling, 백엔드, 스프링, 자바, 태깅, 라벨링]
 ---
