@@ -18,7 +18,7 @@ private void saveAllSubstring(List<String> allDisplayName) { //MySQL DB에 저�
     for (String displayName : allDisplayName) {
         redisSortedSetService.addToSortedSet(displayName + suffix);   //완벽한 형태의 단어일 경우에는 *을 붙여 구분
 
-        for (int i = displayName.length()-1; i > 0; --i) { //음절 단위로 잘라서 모든 Substring 구하기
+        for (int i = displayName.length(); i > 0; --i) { //음절 단위로 잘라서 모든 Substring 구하기
             redisSortedSetService.addToSortedSet(displayName.substring(0, i)); //곧바로 redis에 저장
         }
     }
@@ -76,7 +76,7 @@ public class StoreService {
         for (String displayName : allDisplayName) {
             redisSortedSetService.addToSortedSet(displayName + suffix);   //완벽한 형태의 단어일 경우에는 *을 붙여 구분
 
-            for (int i = displayName.length()-1; i > 0; --i) { //음절 단위로 잘라서 모든 Substring 구하기
+            for (int i = displayName.length(); i > 0; --i) { //음절 단위로 잘라서 모든 Substring 구하기
                 redisSortedSetService.addToSortedSet(displayName.substring(0, i)); //곧바로 redis에 저장
             }
         }
