@@ -23,7 +23,7 @@ tags: [backend, spring, java, redis, autocorrect, autocomplete, 백엔드, 스�
 ## 검색어 자동 완성 로직
 그렇다면 지금부터는 검색어 자동 완성 기능을 구현하기 위한 Flow가 어떻게 되는지 알아보겠습니다.
 
-![1](/assets/img/spring-redis-autocorrect/1.png){: w="400" h="100" style="border:1px solid #eaeaea; border-radius: 7px; padding: 0px;"}
+![1](/assets/img/spring-redis-autocorrect1/1.png){: w="400" h="100" style="border:1px solid #eaeaea; border-radius: 7px; padding: 0px;"}
 
 네이버에 '아이폰'이라는 검색어로 입력을 해보면 위와 같이 아이폰과 관련된, 아이폰이라는 키워드가 포함된 여러 자동 완성 검색 키워드들이 보여집니다. 이러한 자동 완성 기능은 제가 한 음절을 입력할 때마다 새로 갱신됩니다. 이를 착안하여 로직을 생각해보면 다음과 같이 정리할 수 있습니다.
 
@@ -42,11 +42,11 @@ tags: [backend, spring, java, redis, autocorrect, autocomplete, 백엔드, 스�
 **둘째로, 음절 단위로 저장된 데이터 간의 경계값에 주의해야된다는 점**입니다. 보통 이런 자동 완성 기능을 구현하게 되면 최대 자동 완성 검색어 노출 개수를 지정해서 노출하게 될텐데 아무리 오름차순으로 데이터가 정렬되어 있다고 하더라도 Limit 이내에 완전 다른 뜻을 가지는 경계값과 같은 단어가 뒤이어 존재하게 되면 어색한 검색어 예측을 하게 됩니다. **이런 단어들이 사용자에게 노출되면 사용자는 당연하게도 검색어 자동 완성 기능에 신뢰를 잃게 될 것**입니다. 이를 막기 위해서 다양한 방식이 사용될 수 있지만, 저는 가장 심플하게 **사용자가 입력한 검색어가 포함되는 경우에만 자동 완성 검색어로 노출**될 수 있도록 구현할 계획입니다.
 
 ## Redis의 SortedSet
-![2](/assets/img/spring-redis-autocorrect/2.png){: w="600" h="200" style="border:1px solid #eaeaea; border-radius: 7px; padding: 0px;"}    
+![2](/assets/img/spring-redis-autocorrect1/2.png){: w="600" h="200" style="border:1px solid #eaeaea; border-radius: 7px; padding: 0px;"}    
 
 Redis에서 제공하는 자료 구조는 위에서 보시는 것처럼 굉장히 다양합니다. 그 중에서도 저희가 사용할 자료구조는 바로 **SortedSet**입니다.
 
-![3](/assets/img/spring-redis-autocorrect/3.png){: w="400" h="100" style="border:1px solid #eaeaea; border-radius: 7px; padding: 0px;"}    
+![3](/assets/img/spring-redis-autocorrect1/3.png){: w="400" h="100" style="border:1px solid #eaeaea; border-radius: 7px; padding: 0px;"}    
 
 **SortedSet은 이름 그대로 Set 형태의 자료구조인데 정렬을 제공**합니다. 조금 더 자세히 살펴보면, **Redis는 Key-value 쌍으로 데이터를 저장하게 되는데 이 Key 하나에 중복되지 않는 여러 멤버를 저장하며 이 각각의 멤버는 Score와 별도로 연결**됩니다. **이렇게 저장된 데이터는 Score를 기준으로 모두 정렬되며 만약에 Score가 같다면 멤버 값의 사전 순서대로 정렬**됩니다. 참고로 Score와 Member라는 이름에 걸맞게 이 Redis의 SortedSet은 게임 플레이어(멤버)의 점수를 대시보드로 구현할 때 많이 사용된다고 합니다.   
     
