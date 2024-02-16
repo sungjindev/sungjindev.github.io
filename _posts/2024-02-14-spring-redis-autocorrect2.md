@@ -15,6 +15,7 @@ tags: [backend, spring, java, redis, autocorrect, autocomplete, 백엔드, 스�
 private String suffix = "*";    //검색어 자동 완성 기능에서 실제 노출될 수 있는 완벽한 형태의 단어를 구분하기 위한 접미사
 
 private void saveAllSubstring(List<String> allDisplayName) { //MySQL DB에 저장된 모든 가게명을 음절 단위로 잘라 모든 Substring을 Redis에 저장해주는 로직
+    // long start1 = System.currentTimeMillis(); //뒤에서 성능 비교를 위해 시간을 재는 용도
     for (String displayName : allDisplayName) {
         redisSortedSetService.addToSortedSet(displayName + suffix);   //완벽한 형태의 단어일 경우에는 *을 붙여 구분
 
@@ -22,6 +23,8 @@ private void saveAllSubstring(List<String> allDisplayName) { //MySQL DB에 저�
             redisSortedSetService.addToSortedSet(displayName.substring(0, i)); //곧바로 redis에 저장
         }
     }
+    // long end1 = System.currentTimeMillis(); //뒤에서 성능 비교를 위해 시간을 재는 용도
+    // long elapsed1 = end1 - start1;  //뒤에서 성능 비교를 위해 시간을 재는 용도
 }
 ```
 
@@ -73,6 +76,7 @@ public class StoreService {
     }
 
     private void saveAllSubstring(List<String> allDisplayName) { //MySQL DB에 저장된 모든 가게명을 음절 단위로 잘라 모든 Substring을 Redis에 저장해주는 로직
+        // long start1 = System.currentTimeMillis(); //뒤에서 성능 비교를 위해 시간을 재는 용도
         for (String displayName : allDisplayName) {
             redisSortedSetService.addToSortedSet(displayName + suffix);   //완벽한 형태의 단어일 경우에는 *을 붙여 구분
 
@@ -80,6 +84,8 @@ public class StoreService {
                 redisSortedSetService.addToSortedSet(displayName.substring(0, i)); //곧바로 redis에 저장
             }
         }
+        // long end1 = System.currentTimeMillis(); //뒤에서 성능 비교를 위해 시간을 재는 용도
+        // long elapsed1 = end1 - start1;  //뒤에서 성능 비교를 위해 시간을 재는 용도
     }
 
     public List<String> autocorrect(String keyword) { //검색어 자동 완성 기능 관련 로직
@@ -113,10 +119,8 @@ saveAllSubstring 로직은 가장 처음 소개드렸던 로직이라 넘어가�
 
 ![2](/assets/img/spring-redis-autocorrect2/2.png){: w="1000" h="800" style="border:1px solid #eaeaea; border-radius: 7px; padding: 0px;"}
 
-위 화면에서 보시는 것처럼 **정상적으로 동작하며 API Response time도 27ms로 굉장히 준수**합니다. 하지만 여기에는 아주 큰 문제가 있었는데, 그건 바로 아까 **@PostConstruct 애너테이션을 붙여 실행했던 Init() 로직안에 있는 단어 쪼개기 로직의 성능 이슈**입니다. 되게 간단하게 **Substring을 활용해서 이중 for문으로 구현을 했었는데 이 부분에 병목**이 있었습니다. 그래서 위 첫 번째 사진보시면 아실 수 있다시피 **Spring이 모두 온전히 뜰 때까지 총 175초가 걸린 것**입니다. 이는 물론 저희 **Production DB에 총 가게가 약 51200개 정도 있고 가게 이름이 평균 6글자라고만 하더라도 총 51200*6 = 307200번 정도의 Redis 연산이 순차적으로 실행**되었을 겁니다.   
+위 화면에서 보시는 것처럼 **정상적으로 동작하며 API Response time도 27ms로 굉장히 준수**합니다. 하지만 여기에는 아주 큰 문제가 있었는데, 그건 바로 아까 **@PostConstruct 애너테이션을 붙여 실행했던 Init() 로직안에 있는 단어 쪼개기 로직의 성능 이슈**입니다. 되게 간단하게 **Substring을 활용해서 이중 for문으로 구현을 했었는데 이 부분에 병목**이 있었습니다. 그래서 위 첫 번째 사진보시면 아실 수 있다시피 **Spring이 모두 온전히 뜰 때까지 총 158초가 걸린 것**입니다. 이는 물론 저희 **Production DB에 총 가게가 약 51200개 정도 있고 가게 이름이 평균 6글자라고만 하더라도 총 51200*6 = 307200번 정도의 Redis 연산이 순차적으로 실행**되었을 겁니다.   
 
 사실 Backend Application이 뜰 때 딱 1번만 실행되는 로직이라 실제 운영 환경에서 당장은 문제가 안될 것 같기도 하지만 적어도 Dev나 Local 환경에서 계속 빌드할 때마다 저 시간을 기다리기에는 너무 번거롭고 고통스러워서 이 부분을 반드시 개선해야겠다는 생각이 들었습니다. 
 
-![3](/assets/img/spring-redis-autocorrect2/3.png){: w="1000" h="800" style="border:1px solid #eaeaea; border-radius: 7px; padding: 0px;"}
-
-그래서 저는 결과적으로 **병렬 프로그래밍을 통해 이 부분을 약 175초에서 약 4초로 성능을 대폭 개선시켰고 이와 관련된 내용은 다음 포스팅에서 병렬 프로그래밍을 함께 소개하며 공유**드리겠습니다. 
+그래서 저는 결과적으로 **병렬 프로그래밍을 통해 이 부분을 158초에서 0.009초로 성능을 대폭 개선시켰습니다. 두 번째 사진 속 elapsed1이 개선 전 로직 소요 시간이고 elapsed2가 개선 후 로직 소요 시간입니다. 이와 관련된 자세한 내용은 다음 포스팅에서 병렬 프로그래밍을 함께 소개하며 공유**드리겠습니다. 
