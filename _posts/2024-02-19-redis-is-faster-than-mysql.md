@@ -4,7 +4,7 @@ categories: [Computer engineering, Backend engineering]
 tags: [backend, spring, java, redis, MySQL, autocorrect, autocomplete, refactoring, performance issue, 백엔드, 스프링, 자바, 레디스, 자동 완성, 성능 개선, 성능 이슈]
 ---
 
-이번 포스팅에서는 이전 포스팅에서 계속 다뤘던 검색어 자동 완성 구현을 위해 Redis와 MySQL을 각각 사용했을 때 성능을 비교하면서 어떤 것을 사용하는 것이 더 좋은지 알아보겠습니다.
+이번 포스팅에서는 이전 포스팅에서 계속 다뤘던 검색어 자동 완성 구현을 위해 Redis와 MySQL을 각각 사용했을 때 성능을 비교하면서 어떤 것을 사용하는 것이 더 좋은지 알아보겠습니다. **결과적으로 제 상황에서 MySQL이 Redis보다 50배 빨랐습니다.**
 
 ## Redis와 MySQL의 성능 비교를 위한 상황
 **우선 Redis가 좋을지 MySQL이 좋을지 고민하게 된 배경에 대한 소개**를 드리겠습니다. 이전 세 개의 포스팅에 걸쳐 검색어 자동 완성 기능 구현 과정에 대해 공유드렸었는데, 갑작스럽게 요구 사항이 바뀌는 바람에 "어 이러면 Redis 쓰는 의미가 없지 않나?"라는 의구심이 들어 직접 성능 비교를 해보게 되었습니다.   
@@ -103,7 +103,7 @@ public List<String> findAllBySearchKeyword(String searchKeyword) {
 
 ![2](/assets/img/redis-is-faster-than-mysql/2.png){: w="1000" h="800" style="border:1px solid #eaeaea; border-radius: 7px; padding: 0px;"}
 
-실제로 Response time을 체크해보면 위 사진과 같이 **약 0.5초** 밖에 걸리지 않습니다. **무려 Redis를 사용해서 걸렸던 시간의 20%** 밖에 안걸립니다.
+실제로 Response time을 체크해보면 위 사진과 같이 **약 0.05초** 밖에 걸리지 않습니다. **Redis를 사용했을 때보다 무려 50배가 빨라진 것**입니다.
 
 ## Redis VS MySQL 결론
 지금까지 살펴본 성능 분석 결과를 정리해보면 다음과 같습니다.   
