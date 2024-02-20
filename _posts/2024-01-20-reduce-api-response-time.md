@@ -4,7 +4,7 @@ categories: [Computer engineering, Backend engineering]
 tags: [backend, spring, java, refactoring, performance issue, 백엔드, 스프링, 자바, 성능 개선, 성능 이슈]
 ---
 
-이번 포스팅에서는 Spring으로 Project를 진행하다가 마주친 API 성능 이슈를 소개하고 어떻게 20초 걸리던 API call을 0.5초로 줄였는지 공유해보려고 합니다.
+이번 포스팅에서는 Spring으로 Project를 진행하다가 마주친 API 성능 이슈를 소개하고 어떻게 20초 걸리던 API call을 0.3초로 줄였는지 공유해보려고 합니다.
 
 ## 문제의 발단
 ![1](/assets/img/reduce-api-response-time/1.png){: w="1000" h="600" style="border:1px solid #eaeaea; border-radius: 7px; padding: 0px;"}
